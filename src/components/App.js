@@ -1,16 +1,24 @@
 import React from 'react';
 
-import List from './List';
+import ListItem from './ListItem';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       items: ['beginning', 'middle', 'end'],
+      selectedItemIndex: null
     };
   }
 
   render() {
-    return <List itemChannel={this.state.items} />;
-  }
+    const contents = this.state.items.map((item, index) => {
+      return <ListItem name={item} id={index} key={index} 
+      commChannel={(selectedItem)=> this.setState({selectedItemIndex: selectedItem})}/>;
+    });
+  return( 
+  <div className="list">
+  {contents}
+  </div>
+  );}
 }
