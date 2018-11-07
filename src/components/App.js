@@ -6,19 +6,36 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: ['beginning', 'middle', 'end'],
+      items: ['end', 'middle', 'beginning'],
       selectedItemIndex: null,
+      solutionItems: ['beginning', 'middle', 'end'],
+      solved: ''
     };
   }
 
+  checkSolution() {
+    console.log('check');
+    let solved = true;
+    for (let i = 0; i < this.state.solutionItems.length; i++) {
+      if (this.state.items[i] !== this.state.solutionItems[i]) {
+        solved = false;
+      }
+    }
+    console.log('console solved', solved);
+
+    if (solved) {
+      this.setState({ solved: 'Solution complete!' });
+    }
+  }
+
   handleOnKeyPress(key) {
-    if(key==='ArrowUp'){
+    if (key === 'ArrowUp') {
       this.moveUp();
     }
-    else if(key==='ArrowDown'){
+    else if (key === 'ArrowDown') {
       this.moveDown();
     }
-    else{
+    else {
       alert("Please press UP or DOWN to reorder your list!");
     }
   }
@@ -30,34 +47,40 @@ export default class App extends React.Component {
 
     const swappingIndex = this.state.selectedItemIndex;
     const originalIndex = this.state.selectedItemIndex - 1;
- 
+
 
     const temporaryArray = this.state.items.slice(0, this.state.items.length);
     const savedItem = temporaryArray[originalIndex];
     temporaryArray[originalIndex] = temporaryArray[swappingIndex];
     temporaryArray[swappingIndex] = savedItem;
 
-    this.setState({items: temporaryArray, selectedItemIndex: originalIndex});
+    this.setState({ items: temporaryArray, selectedItemIndex: originalIndex }, function () {
+      this.checkSolution();
+    });
+
   }
 
   moveDown() {
-    if (this.state.selectedItemIndex === this.state.items.length-1) {
+    if (this.state.selectedItemIndex === this.state.items.length - 1) {
       return;
     }
 
     const swappingIndex = this.state.selectedItemIndex;
     const originalIndex = this.state.selectedItemIndex + 1;
-    
+
 
     const temporaryArray = this.state.items.slice(0, this.state.items.length);
     const savedItem = temporaryArray[originalIndex];
     temporaryArray[originalIndex] = temporaryArray[swappingIndex];
     temporaryArray[swappingIndex] = savedItem;
-    
-    this.setState({items: temporaryArray, selectedItemIndex: originalIndex});
+
+    this.setState({ items: temporaryArray, selectedItemIndex: originalIndex }, function () {
+      this.checkSolution();
+    });
   }
 
   render() {
+
     const contents = this.state.items.map((item, index) => {
       return (
         <ListItem
@@ -71,6 +94,9 @@ export default class App extends React.Component {
         />
       );
     });
-    return <div className="list" onKeyUp={(event) => this.handleOnKeyPress(event.key)} tabIndex="0">{contents}</div>;
+    return <div className="list" onKeyUp={(event) => this.handleOnKeyPress(event.key)} tabIndex="0">
+      <span>{this.state.solved}</span>
+      {contents}
+    </div>;
   }
 }
