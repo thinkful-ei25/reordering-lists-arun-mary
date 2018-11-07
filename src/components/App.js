@@ -13,7 +13,8 @@ export default class App extends React.Component {
 
   render() {
     const contents = this.state.items.map((item, index) => {
-      return <ListItem name={item} id={index} key={index} 
+      return <ListItem name={item} id={index} key={index}
+      isHighlighted={index === this.state.selectedItemIndex}
       commChannel={(selectedItem)=> this.setState({selectedItemIndex: selectedItem})}/>;
     });
   return( 
