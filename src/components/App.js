@@ -12,18 +12,49 @@ export default class App extends React.Component {
   }
 
   handleOnKeyPress(key) {
+    if(key==='ArrowUp'){
+      this.moveUp();
+    }
+    else if(key==='ArrowDown'){
+      this.moveDown();
+    }
+    else{
+      alert("Please press UP or DOWN to reorder your list!");
+    }
   }
 
-  moveForward() {
+  moveUp() {
     if (this.state.selectedItemIndex === 0) {
       return;
     }
 
+    const swappingIndex = this.state.selectedItemIndex;
+    const originalIndex = this.state.selectedItemIndex - 1;
+ 
+
     const temporaryArray = this.state.items.slice(0, this.state.items.length);
-    const savedItem = temporaryArray[this.state.selectedItemIndex - 1];
-    temporaryArray[this.state.selectedItemIndex - 1] = temporaryArray[this.state.selectedItemIndex];
-    temporaryArray[this.state.selectedItemIndex] = savedItem;
-    this.setState({items: temporaryArray});
+    const savedItem = temporaryArray[originalIndex];
+    temporaryArray[originalIndex] = temporaryArray[swappingIndex];
+    temporaryArray[swappingIndex] = savedItem;
+
+    this.setState({items: temporaryArray, selectedItemIndex: originalIndex});
+  }
+
+  moveDown() {
+    if (this.state.selectedItemIndex === this.state.items.length-1) {
+      return;
+    }
+
+    const swappingIndex = this.state.selectedItemIndex;
+    const originalIndex = this.state.selectedItemIndex + 1;
+    
+
+    const temporaryArray = this.state.items.slice(0, this.state.items.length);
+    const savedItem = temporaryArray[originalIndex];
+    temporaryArray[originalIndex] = temporaryArray[swappingIndex];
+    temporaryArray[swappingIndex] = savedItem;
+    
+    this.setState({items: temporaryArray, selectedItemIndex: originalIndex});
   }
 
   render() {
@@ -40,6 +71,6 @@ export default class App extends React.Component {
         />
       );
     });
-    return <div className="list">{contents}</div>;
+    return <div className="list" onKeyUp={(event) => this.handleOnKeyPress(event.key)} tabIndex="0">{contents}</div>;
   }
 }
